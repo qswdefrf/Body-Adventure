@@ -80,7 +80,6 @@ public class Gastrin : MonoBehaviour
     }
     public void FixedUpdate() {
         SensingWall();
-
     }
     private void OnDrawGizmos() {
         // 덩어리 소환 각도
@@ -157,6 +156,11 @@ public class Gastrin : MonoBehaviour
             float Dst = Mathf.Clamp((WallSensingRange - SpawnLumpToWall), 0, WallSensingRange);
             Vector2 leftDir = transformPosition + new Vector2(Mathf.Cos(lefttheta), Mathf.Sin(lefttheta)) * Dst;
             Gizmos.DrawLine(transformPosition, leftDir);
+        }
+    }
+    public void OnTriggerEnter2D(Collider2D collision) {
+        if(collision.tag == "Player") {
+            EventManager<PlayerEvent>.Instance.PostEvent(PlayerEvent.KillPlayer, this, null);
         }
     }
 }

@@ -14,16 +14,15 @@ public class UIStageRoom : MonoBehaviour
     [SerializeField] List<StageButton> StageButtonList = new List<StageButton>();
     private void Start() {
         foreach (StageButton stageButton in StageButtonList) {
-            StageData stageData = StageDataManager.Instance.GetStageData(stageButton.StageName);
+            SO_Stage stageData = StageDataManager.Instance.GetStageData(stageButton.StageName);
             if (stageData != null) {
-                if (!stageData.isJoin) {
+                if (!stageData.IsJoin) {
                     ColorBlock cb = stageButton.button.colors;
                     cb.normalColor = Color.black;
                     cb.selectedColor = Color.black;
                     stageButton.button.colors = cb;
                 } else
                     stageButton.button.onClick.AddListener(() => { OnStageButtonClick(stageData.SceneName); });
-                continue;
             } else {
                 stageButton.button.onClick.AddListener(() => { OnStageButtonClick(stageButton.StageName); });               
                 ColorBlock cb = stageButton.button.colors;

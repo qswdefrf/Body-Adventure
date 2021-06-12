@@ -6,9 +6,9 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.Experimental.Rendering.Universal;
 [Serializable]
-class PlayerSprite {
+public class PlayerSprite {
     public Sprite sprite = null;
-    public Vector2 CollisionSize = new Vector2(1,1);
+    public Vector2 PlayerScale = new Vector2(1,1);
 }
 class SpeedDeBuff {
     PlayerBase Target;
@@ -45,18 +45,20 @@ class SpeedDeBuff {
 }
 public class PlayerBase : UnitBase
 {
+    [Header("0(기본) ~ 4(죽는 모션)")]
+    public List<PlayerSprite> PlayerSprites = new List<PlayerSprite>(5);
     [SerializeField] float speed = 2; public float Speed { get { return TotalSpeed(); } }
+    [SerializeField] float MinSpeed = 0.2f;
     float TotalSpeed() {
         float totalSpeed = speed;
         foreach(SpeedDeBuff debuff in BuffList) {
             totalSpeed = debuff.Value(totalSpeed);
         }
-        return totalSpeed;
+        return Mathf.Max(MinSpeed, totalSpeed);
     }
     List<SpeedDeBuff> BuffList = new List<SpeedDeBuff>();
-    int hp = 4;
+    int hp = 0;
     public ParticleSystem DieParticle;
-    public PlayerSight playerSight;
     [SerializeField] Color NormalColor = new Color(1,1,1,1);
     [Header("피격시 무적 시간")]
     public float InvincibilityDuration = 1;
@@ -65,8 +67,19 @@ public class PlayerBase : UnitBase
 
     protected override void Start() {
         base.Start();
-        playerSight = GetComponent<PlayerSight>();
         StartCoroutine(SpeedBuffTimer());
+        EventManager<PlayerEvent>.Instance.AddListener(PlayerEvent.KillPlayer, this, asdf);
+        EventManager<GameEvent>.Instance.AddListener(GameEvent.ChangeStageStart,this, ChangeStageStart);
+    }
+    void asdf(PlayerEvent eventType, Component sender, object param = null) {
+        Die();
+    }
+    void ChangeStageStart(GameEvent eventType, Component sender, object param = null) {
+        gameObject.tag = "Invincibility";
+        gameObject.layer = LayerMask.NameToLayer("Invincibility");
+    }
+    private void OnDisable() {
+        EventManager<PlayerEvent>.Instance.RemoveEvent(PlayerEvent.KillPlayer, asdf);
     }
     public void Update() {
         if (Input.GetKeyDown(KeyCode.K)) {
@@ -100,27 +113,14 @@ public class PlayerBase : UnitBase
     }
     #endregion
     public override void OnDamaged(UnitBase attacker, float power) {
-        hp -= 1;
-        switch (hp) {
-            case 3:
-                transform.localScale = new Vector2(3.6f, 3.6f);
-                NormalColor = new Color (0.8f, 1f, 0.8f, 1);
-                DamagedEffect(attacker, power);
-                break;
-            case 2:
-                transform.localScale = new Vector2(4.2f, 4.2f);
-                NormalColor = new Color(0.6f, 0.8f, 0.6f, 1);
-                DamagedEffect(attacker, power);
-                break;
-            case 1:
-                transform.localScale = new Vector2(4.8f, 4.8f);
-                NormalColor = new Color(0.4f, 0.6f, 0.4f, 1);
-                DamagedEffect(attacker, power);
-                break;
-            case 0:
-                Die();
-                return;
-        }      
+        hp++;
+            transform.localScale = PlayerSprites[hp].PlayerScale;
+            spriteRenderer.sprite = PlayerSprites[hp].sprite;
+        if(hp == PlayerSprites.Count - 1) {
+            Die();
+        }
+        else
+            DamagedEffect(attacker, power); 
     }
     void DamagedEffect(UnitBase attacker, float power) {
         Vector2 Recoilvec = (transform.position - attacker.transform.position).normalized;
@@ -150,6 +150,7 @@ public class PlayerBase : UnitBase
     }
     protected override void Die() {
         stun = true;
+        spriteRenderer.sprite = PlayerSprites[PlayerSprites.Count - 1].sprite;
         gameObject.tag = "Invincibility";
         gameObject.layer = LayerMask.NameToLayer("Invincibility");
         CameraController.Instance.ShakeCamera(1, 1, 0.05f);
@@ -161,7 +162,7 @@ public class PlayerBase : UnitBase
         EventManager<PlayerEvent>.Instance.PostEvent(PlayerEvent.Die, this, null);
         EventManager<GameEvent>.Instance.PostEvent(GameEvent.StageRestart, this, null);
         Debug.Log("사망");
-        gameObject.SetActive(false);
+        spriteRenderer.color = new Color(1, 1, 1, 0);
     }
 }
 

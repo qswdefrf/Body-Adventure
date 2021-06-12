@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using DG.Tweening;
 public class Lump : EnemyBase {
     [SerializeField] SO_Enemy SOLump = null;
     protected override SO_Enemy SOEnemy { get { return SOLump; } }
@@ -13,6 +13,7 @@ public class Lump : EnemyBase {
         float angle = StartAngle;
         angle *= Mathf.Deg2Rad;
         Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+        transform.rotation = Quaternion.Euler(0, 0, StartAngle);
         rigid.AddForce(dir * Speed, ForceMode2D.Impulse);
     }
     public void SetLump(float speed) {
@@ -29,5 +30,8 @@ public class Lump : EnemyBase {
             || collision.gameObject.layer == LayerMask.NameToLayer("ObstacleWall")) {
             Destroy(gameObject, 3);
         }
+    }
+    ~Lump() {
+        transform.DOKill();
     }
 }

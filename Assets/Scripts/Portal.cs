@@ -10,10 +10,16 @@ public class Portal : MonoBehaviour
     [Header("페이드 이펙트")]
     [SerializeField] string FadeEffectName = "NormalFadeEffect";
     [SerializeField] float FadeEffectDuration = 2;
-    public void OnTriggerEnter2D(Collider2D collision) {
-        
-        if(collision.gameObject.tag == "Player") {
-            SceneUtilityManager.Instance.FadeAndSceneChange(SceneName, FadeEffectName, FadeEffectDuration);
+    [SerializeField] Vector2 ColliderSize = new Vector2(1, 1);
+    private void Update() {
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, ColliderSize, 0);
+        foreach(Collider2D collider in colliders) {
+            if(collider.tag == "Player")
+                SceneUtilityManager.Instance.FadeAndSceneChange(SceneName, FadeEffectName, FadeEffectDuration);
         }
+    }
+    public void OnDrawGizmos() {
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireCube(transform.position, ColliderSize);
     }
 }

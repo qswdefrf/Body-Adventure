@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 public enum PlayerEvent {
-    Damaged, Die
+    Damaged, Die, KillPlayer
 }
 
 public enum GameEvent {
-    ChangeStage, Test, Save , Load, SavePoint, StageStart, StageRestart
+    ChangeStage, ChangeStageStart, Test, Save , Load, SavePoint, StageStart, StageRestart
 }
 

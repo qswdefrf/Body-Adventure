@@ -14,10 +14,11 @@ public class UnitBase : MonoBehaviour
     private void Init() {
         spriteRenderer.color = new Color(0, 0, 0, 1);
     }
-
-    protected virtual void Start() {
+    protected virtual void Awake() {
         spriteRenderer = GetComponent<SpriteRenderer>();
         rigid = GetComponent<Rigidbody2D>();
+    }
+    protected virtual void Start() {
     }
     public virtual void OnDamaged(UnitBase Attacker, float power) { }
     #region 스턴
@@ -46,7 +47,7 @@ public class UnitBase : MonoBehaviour
     protected virtual void Die() {
         Destroy(gameObject);
     }
-    protected virtual void OnDisable() {
+    private void OnDestroy() {
         transform.DOKill();
     }
 }

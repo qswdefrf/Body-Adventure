@@ -7,12 +7,13 @@ using UnityEditor;
 public class MovingLumpEditor : Editor
 {
     private void OnSceneGUI() {
+        EditorGUI.BeginChangeCheck();
         MovingLump movingLump = (MovingLump)target;
         Vector2 point1 = movingLump.Point1;
         Vector2 point2 = movingLump.Point2;
-        Handles.color = Color.red;
         float handleSize = movingLump.HandleSize;
 
+        Handles.color = Color.red;
         Vector2 pos1 = Handles.FreeMoveHandle(point1, Quaternion.identity, handleSize, Vector2.zero, Handles.CylinderHandleCap);
         movingLump.Point1 = pos1;
 
@@ -26,6 +27,7 @@ public class MovingLumpEditor : Editor
             movingLump.transform.position = movingLump.Point1;
         } else
             movingLump.transform.position = movingLump.Point2;
+        EditorUtility.SetDirty(movingLump);
     }
     public override void OnInspectorGUI() {
         base.OnInspectorGUI();
@@ -39,5 +41,18 @@ public class MovingLumpEditor : Editor
         EditorGUILayout.HelpBox("EaseType을 설정 함으로서 매끄럽게 이동하는 법 설정 가능\n\n 자세한 수치 알고 싶으시다면 아래 링크 직접 쓰시거나 혹은 프로그래머한테 연략하면 링크 보내드립니다.", MessageType.None);
         EditorGUILayout.HelpBox("https://blog.naver.com/hana100494/222084755392", MessageType.None);
         //https://blog.naver.com/hana100494/222084755392
+    }
+    public void OnEnable() {
+        MovingLump movingLump = (MovingLump)target;
+        float dst = Vector2.Distance(movingLump.Point1, movingLump.Point2);
+        if (movingLump.MoveStartRed) {
+            Vector2 dir = (movingLump.Point2 - movingLump.Point1).normalized;
+            movingLump.Point1 = movingLump.transform.position;
+            movingLump.Point2 = movingLump.Point1 + dir * dst;
+        } else {
+            Vector2 dir = (movingLump.Point1 - movingLump.Point2).normalized;
+            movingLump.Point2 = movingLump.transform.position;
+            movingLump.Point1 = movingLump.Point2 + dir * dst;
+        }
     }
 }

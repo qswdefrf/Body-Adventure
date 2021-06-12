@@ -5,25 +5,23 @@ using UnityEngine.SceneManagement;
 using System;
 using GameSave;
 using System.Threading;
-[Serializable]
-public class StageData{
-    public string SceneName = null;
-    public AudioClip BGM;
-    public string FadeInEffectName = "NormalFadeEffect";
-    public float FadeInDuration = 2;
-    public string FadeOutEffectName = "NormalFadeEffect";
-    public float FadeOutDuration = 2;
-    public bool isJoin = false;
-}
+
 public class StageDataManager : DontDestroySingletonBehaviour<StageDataManager> {
-    [SerializeField] List<StageData> StageDataList = new List<StageData>();
+    [SerializeField] List<SO_Stage> StageDataList = new List<SO_Stage>();
+   
     bool isLoad = true;
     public override void Awake() {
         base.Awake();
+        Init();
         if (isLoad)
             LoadStageData();
     }
-    public StageData GetStageData(string StageName) {
+    public void Init() {
+        for (int i = 0; i < StageDataList.Count; i++) {
+            StageDataList[i].Init();
+        }
+    }
+    public SO_Stage GetStageData(string StageName) {
         for (int i = 0; i < StageDataList.Count; i++) {
             if (StageName == StageDataList[i].SceneName) {
                 return StageDataList[i];
@@ -43,7 +41,7 @@ public class StageDataManager : DontDestroySingletonBehaviour<StageDataManager> 
         }
         if (checkStage == false)
             SceneUtilityManager.Instance.FadeIn("NormalFadeEffect", 2);
-        EventManager<GameEvent>.Instance.AddListener(GameEvent.ChangeStage, StageChangeEvent);
+        EventManager<GameEvent>.Instance.AddListener(GameEvent.ChangeStage, this, StageChangeEvent);
     }
 
     void StageChangeEvent(GameEvent eventType, Component component, object param) {
@@ -52,7 +50,7 @@ public class StageDataManager : DontDestroySingletonBehaviour<StageDataManager> 
             if(SceneName == StageDataList[i].SceneName) {
                 if(SceneUtilityManager.Instance != null)
                 SceneUtilityManager.Instance.FadeIn(StageDataList[i].FadeInEffectName, StageDataList[i].FadeInDuration);
-                StageDataList[i].isJoin = true;
+                StageDataList[i].IsJoin = true;
 
                 if (StageDataList[i].BGM != null)
                     SoundManager.Instance.PlayBGM(StageDataList[i].BGM, 1);
@@ -79,9 +77,9 @@ public class StageDataManager : DontDestroySingletonBehaviour<StageDataManager> 
     public void SaveStageData() {
         SaveData stageSaveData = new SaveData();
         if (stageSaveData != null) {
-            foreach (StageData stageData in StageDataList) {
+            foreach (SO_Stage stageData in StageDataList) {
                 int isJoin = 0;
-                if (stageData.isJoin)
+                if (stageData.IsJoin)
                     isJoin = 1;
                 stageSaveData.AddData(stageData.SceneName, new SaveData(isJoin));
             }
@@ -91,14 +89,13 @@ public class StageDataManager : DontDestroySingletonBehaviour<StageDataManager> 
     public void LoadStageData() {
         SaveData stageSaveData = SaveManager.LoadDeSerailizedData("Stage", "StagesData");
         if (stageSaveData != null) {
-            foreach (StageData stageData in StageDataList) {
+            foreach (SO_Stage stageData in StageDataList) {
                 SaveData StageLoadData = stageSaveData.GetData(stageData.SceneName);
                 if (StageLoadData != null) {
-                    bool isJoin = false;
-                    if (StageLoadData.GetInt() == 1)
-                        isJoin = true;
-                    stageData.isJoin = isJoin;
-                    Debug.Log(stageData.SceneName + "  " + "isJoin : " + stageData.isJoin);
+                    if (StageLoadData.GetInt() == 1) {
+                        stageData.IsJoin = true;
+                    }
+                    Debug.Log(stageData.SceneName + "  " + "isJoin : " + stageData.IsJoin);
                 }
             }
         }

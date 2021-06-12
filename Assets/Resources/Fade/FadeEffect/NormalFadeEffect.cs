@@ -14,7 +14,8 @@ public class NormalFadeEffect : FadeEffect {
             CreateImage.DOFade(1, duration).SetUpdate(true);
         else
             CreateImage.DOFade(1, duration).SetUpdate(true).OnStart(() => { CreateImage.raycastTarget = false; }).
-    OnComplete(() => { if (callback.Length > 0 && callback != null) { foreach (Action Callback in callback) Callback(); } else return; });
+    OnComplete(() => { if (callback.Length > 0 && callback != null) { foreach (Action Callback in callback) Callback(); } else { CreateImage.DOKill(); return; }
+        CreateImage.DOKill(); });
     }
     public override void FadeIn(float duration, params Action[] callback) {
         Image CreateImage = SceneUtilityManager.Instance.CreateFadeImage(FadeImageName,1,1, new Color(0, 0, 0, 1), duration);
@@ -23,7 +24,8 @@ public class NormalFadeEffect : FadeEffect {
             CreateImage.DOFade(0, duration).SetUpdate(true);
         } else
             CreateImage.DOFade(0, duration).SetUpdate(true).OnStart(() => { CreateImage.raycastTarget = false; }).
-OnComplete(() => { if (callback.Length > 0 && callback != null) { foreach (Action Callback in callback) Callback(); } else return; });
+OnComplete(() => { if (callback.Length > 0 && callback != null) { foreach (Action Callback in callback) Callback(); } 
+else { CreateImage.DOKill(); return; } CreateImage.DOKill(); });
 
     }
 }

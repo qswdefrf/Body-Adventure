@@ -58,6 +58,7 @@ public class GastrinPathEditor : Editor {
         if(body != null && !Application.isPlaying) {
             body.transform.position = path[0];
         }
+        EditorUtility.SetDirty(gastrin);
     }
     Transform body;
     private void OnEnable() {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using DG.Tweening;
 [Serializable]
 public abstract class FadeEffect{
     // 이 페이드 이펙트의 이름

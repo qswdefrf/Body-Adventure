@@ -7,11 +7,11 @@ using GameSave;
 public class StageManager : MonoBehaviour
 {
     private void Awake() {
-        EventManager<GameEvent>.Instance.AddListener(GameEvent.StageRestart, PlayerDieEvent);
+        EventManager<GameEvent>.Instance.AddListener(GameEvent.StageRestart, this, PlayerDieEvent);
     }
     void PlayerDieEvent(GameEvent eventType, Component component, object param) {
         string nowSceneName = SceneManager.GetActiveScene().name;
-        StageData stageData = StageDataManager.Instance.GetStageData(nowSceneName);
+        SO_Stage stageData = StageDataManager.Instance.GetStageData(nowSceneName);
         if (stageData != null) {
             SceneUtilityManager.Instance.FadeAndSceneChange(stageData.SceneName, stageData.FadeInEffectName, stageData.FadeInDuration);
         } else {

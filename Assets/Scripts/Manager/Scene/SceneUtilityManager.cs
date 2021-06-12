@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System;
 using System.Reflection;
 using DG.Tweening;
+using System.Linq;
 public class SceneUtilityManager : DontDestroySingletonBehaviour<SceneUtilityManager>
 {
     Dictionary<string, Image> FadeImageDIc = new Dictionary<string, Image>();
@@ -41,13 +42,12 @@ public class SceneUtilityManager : DontDestroySingletonBehaviour<SceneUtilityMan
     #endregion
     public void InvokeFadeEffect(string mathodName, string fadeEffectName, float duration, params Action[] callback) {
         Type type = Type.GetType(fadeEffectName);
-        MethodInfo method = type.GetMethod(mathodName);
-        ConstructorInfo magicConstructor = type.GetConstructor(Type.EmptyTypes);
-        object magicClassObject = magicConstructor.Invoke(new object[] { });
+        MethodInfo method = type.GetMethod(mathodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        object fadeEffect = Activator.CreateInstance(type);
         object[] parameter = new object[2];
         parameter[0] = duration;
         parameter[1] = callback;
-        method.Invoke(magicClassObject, parameter);
+        method.Invoke(fadeEffect, parameter);
     }
     public void FadeAndSceneChange(string sceneName, string fadeEffectName, float duration)  {
         if (!IsGetScene(sceneName)) {
@@ -57,12 +57,13 @@ public class SceneUtilityManager : DontDestroySingletonBehaviour<SceneUtilityMan
         Type type = Type.GetType(fadeEffectName);
         MethodInfo methodFadeOut = type.GetMethod("FadeOut");
         MethodInfo methodFadeIn = type.GetMethod("FadeIn");
-        ConstructorInfo fadeConstructor = type.GetConstructor(Type.EmptyTypes);
-        object fadeClassObject = fadeConstructor.Invoke(new object[] { });       
+        object fadeEffect = Activator.CreateInstance(type);
+        //ConstructorInfo fadeConstructor = type.GetConstructor(Type.EmptyTypes);
+        //object fadeClassObject = fadeConstructor.Invoke(new object[] { });       
         object[] fadeOutParameter = new object[2];
         fadeOutParameter[0] = duration;
         fadeOutParameter[1] = new Action[] { () => { SceneChange(sceneName); Time.timeScale = 1; } };
-        methodFadeOut.Invoke(fadeClassObject, fadeOutParameter);
+        methodFadeOut.Invoke(fadeEffect, fadeOutParameter);
     }
     public bool IsGetScene(string sceneName) {
         return SceneManager.GetSceneByName(sceneName) != null ? true : false;
