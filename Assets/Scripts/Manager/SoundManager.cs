@@ -32,6 +32,14 @@ public class SoundManager : DontDestroySingletonBehaviour<SoundManager> {
         }
         _audioSources[(int)Sound.BGM].loop = true; //
         isLoad = true;
+        string audioPath = "Audio";
+
+        AudioClip[] audios = Resources.LoadAll<AudioClip>(audioPath);
+        _audioClips = new Dictionary<string, AudioClip>();
+        for (int i = 0; i < audios.Length; i++) {
+            Debug.Log(audios[i].name);
+            _audioClips.Add(audios[i].name, audios[i]);
+        }
     }
 
     public void Clear() {
@@ -50,7 +58,7 @@ public class SoundManager : DontDestroySingletonBehaviour<SoundManager> {
         _audioSources[(int)soundType].volume = volume;
         Debug.Log(_audioSources[(int)soundType].volume);
     }
-    public void PlayBGM(AudioClip clip, float pitch) {
+    public void PlayBGM(AudioClip clip, float pitch, bool loop) {
         if (clip == null)
             return;
         Sound soundType = Sound.BGM;
@@ -58,9 +66,19 @@ public class SoundManager : DontDestroySingletonBehaviour<SoundManager> {
         if (audioSource.isPlaying)
             audioSource.Stop();
 
+        audioSource.loop = loop;
         audioSource.pitch = pitch;
         audioSource.clip = clip;
         audioSource.Play();
+    }
+    public void PlayEffect(string effectName) {
+        if (!_audioClips.ContainsKey(effectName)) {
+            Debug.LogWarning(effectName + " 이라는 오디오는 없습니다.");
+            return;
+        }
+        Sound soundType = Sound.Effect;
+        AudioSource audioSource = _audioSources[(int)soundType];
+        audioSource.PlayOneShot(_audioClips[effectName]);
     }
     public void PlayEffect(AudioClip clip, float pitch, Vector2 pos) {
         if (clip == null)
@@ -98,7 +116,7 @@ public class SoundManager : DontDestroySingletonBehaviour<SoundManager> {
         }
         SaveManager.SaveSerailizeData("Option", "OptionData", soundData);
     }
-    ~SoundManager() {
+    private void OnApplicationQuit() {
         Save();
     }
 }

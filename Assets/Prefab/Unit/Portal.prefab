@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SceneName: Stage2
   FadeEffectName: NormalFadeEffect
-  FadeEffectDuration: 2
+  FadeEffectDuration: 5
   ColliderSize: {x: 1, y: 1}
 --- !u!212 &1680935246478580386
 SpriteRenderer:

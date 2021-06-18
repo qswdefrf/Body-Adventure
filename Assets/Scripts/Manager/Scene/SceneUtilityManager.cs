@@ -58,8 +58,6 @@ public class SceneUtilityManager : DontDestroySingletonBehaviour<SceneUtilityMan
         MethodInfo methodFadeOut = type.GetMethod("FadeOut");
         MethodInfo methodFadeIn = type.GetMethod("FadeIn");
         object fadeEffect = Activator.CreateInstance(type);
-        //ConstructorInfo fadeConstructor = type.GetConstructor(Type.EmptyTypes);
-        //object fadeClassObject = fadeConstructor.Invoke(new object[] { });       
         object[] fadeOutParameter = new object[2];
         fadeOutParameter[0] = duration;
         fadeOutParameter[1] = new Action[] { () => { SceneChange(sceneName); Time.timeScale = 1; } };
@@ -82,12 +80,20 @@ public class SceneUtilityManager : DontDestroySingletonBehaviour<SceneUtilityMan
                 return null; 
             }
             Image createImage = Instantiate(image, canvas);
-            Destroy(createImage, duration + 1);
+            StartCoroutine(DestroyImage(createImage.gameObject, duration + 1));
             ActiveImage = createImage;
             Debug.Log("이미지 생성 완료");
             return createImage;
         }
         return null;
+    }
+    IEnumerator DestroyImage(GameObject image, float duration) {
+        yield return new WaitForSeconds(duration);
+        if (image != null) {
+            image.transform.DOKill();
+            image.SetActive(false);
+           // Destroy(image);
+        }
     }
     public void SceneChange(string sceneName) {
         if (SceneManager.GetSceneByName(sceneName) != null) {

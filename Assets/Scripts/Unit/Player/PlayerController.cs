@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
             Vector2 movePos = (Vector2)transform.position + mouseDIr * speed * Time.deltaTime;
             rigid.MovePosition(movePos);
         }
+        if(CameraController.Instance != null)
         CameraController.Instance.Speed = playerBase.Speed + 1;
     }
 }

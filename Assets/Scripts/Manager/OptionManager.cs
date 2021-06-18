@@ -8,6 +8,7 @@ public class OptionManager : DontDestroySingletonBehaviour<OptionManager>
     int ScreenHwight = 1024;
 
     public void Start() {
+        if(Screen.width != ScreenWidth || Screen.height != ScreenHwight)
         SetScreenResolution(ScreenWidth, ScreenHwight);
     }
     public void SetScreenResolution(int width, int height) {

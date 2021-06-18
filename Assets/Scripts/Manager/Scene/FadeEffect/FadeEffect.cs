@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 using DG.Tweening;
 [Serializable]
 public abstract class FadeEffect{

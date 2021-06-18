@@ -85,7 +85,6 @@ public class CameraController : MonoBehaviour
             Duration -= UpdateTime;
             Power = Mathf.Lerp(0, power, Duration / duration);
         }
-        mainCamera.transform.localPosition = mainCamera.transform.position;
     }
     public void NotReduceShakeCamera(float duration, float power, float updateTime) {
         StartCoroutine(C_NotReduceShakeCamera(duration, power, updateTime));

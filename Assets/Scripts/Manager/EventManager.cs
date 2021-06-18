@@ -9,15 +9,18 @@ public class EventManager<T> : Singleton<EventManager<T>> where T : Enum
     public void AddListener(T eventType, Component Listener, Action<T, Component, object> callback) {
         if (callback == null)
             return;
+
         if (!Listeners.ContainsKey(eventType)) {
             Action<T, Component, object> dic = null;
             Listeners.Add(eventType, dic);
-            Action<T, Component, object> action = null;
-            action = (_eventType, _ob, param) => { if (Listener == null) { RemoveEvent(eventType, action); return; } callback(_eventType, _ob, param); };
-            Listeners[eventType] += action;
         }
-        else
-        Listeners[eventType] += callback;
+
+        Action<T, Component, object> action = null;
+        action = (_eventType, _ob, param) => { 
+            if (Listener == null) 
+            { RemoveEvent(eventType, action); return; }
+            callback(_eventType, _ob, param); };
+        Listeners[eventType] += action;
     }
 
     public void PostEvent(T eventType, Component sender, object param = null) {

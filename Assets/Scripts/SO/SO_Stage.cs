@@ -17,14 +17,10 @@ public class SO_Stage : ScriptableObject
     [SerializeField] float fadeInDuration = 2;
     public float FadeInDuration { get { return fadeInDuration; } }
 
-    [SerializeField] string fadeOutEffectName = "NormalFadeEffect";
-    public string FadeOutEffectName { get { return fadeOutEffectName; } }
-
-    [SerializeField] float fadeOutDuration = 2;
-    public float FadeOutDuration { get { return fadeOutDuration; } }
-
     [SerializeField] bool isNormalJoin = false;
     public bool IsNormalJoin { get { return isNormalJoin; } }
+    [SerializeField] bool isLoop = true;
+    public bool IsLoop { get { return isLoop; } }
     public bool IsJoin = false;
     public void Init() {
         IsJoin = isNormalJoin;

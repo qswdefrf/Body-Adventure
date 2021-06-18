@@ -116,13 +116,14 @@ public class PlayerBase : UnitBase
         hp++;
             transform.localScale = PlayerSprites[hp].PlayerScale;
             spriteRenderer.sprite = PlayerSprites[hp].sprite;
-        if(hp == PlayerSprites.Count - 1) {
+        if (hp == PlayerSprites.Count - 1) {
             Die();
+        } else {
+            DamagedEffect(attacker, power);
         }
-        else
-            DamagedEffect(attacker, power); 
     }
     void DamagedEffect(UnitBase attacker, float power) {
+        SoundManager.Instance.PlayEffect("Collision");
         Vector2 Recoilvec = (transform.position - attacker.transform.position).normalized;
         PushPlayer(Recoilvec, 1);
         spriteRenderer.DOKill();
@@ -159,8 +160,9 @@ public class PlayerBase : UnitBase
     IEnumerator DieEffect(float waitTime) {
         yield return new WaitForSeconds(waitTime);
         Instantiate(DieParticle, transform.position, Quaternion.identity);
-        EventManager<PlayerEvent>.Instance.PostEvent(PlayerEvent.Die, this, null);
+        //EventManager<PlayerEvent>.Instance.PostEvent(PlayerEvent.Die, this, null);
         EventManager<GameEvent>.Instance.PostEvent(GameEvent.StageRestart, this, null);
+        SoundManager.Instance.PlayEffect("GameOver");
         Debug.Log("사망");
         spriteRenderer.color = new Color(1, 1, 1, 0);
     }

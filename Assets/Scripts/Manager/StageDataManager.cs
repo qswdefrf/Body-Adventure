@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using System;
 using GameSave;
 using System.Threading;
-
+using DG.Tweening;
 public class StageDataManager : DontDestroySingletonBehaviour<StageDataManager> {
     [SerializeField] List<SO_Stage> StageDataList = new List<SO_Stage>();
    
@@ -15,6 +15,10 @@ public class StageDataManager : DontDestroySingletonBehaviour<StageDataManager> 
         Init();
         if (isLoad)
             LoadStageData();
+    }
+    protected void Start() {
+        EventManager<GameEvent>.Instance.AddListener(GameEvent.ChangeStage, this, StageChangeEvent);
+        SetStage(SceneManager.GetActiveScene().name);
     }
     public void Init() {
         for (int i = 0; i < StageDataList.Count; i++) {
@@ -30,30 +34,20 @@ public class StageDataManager : DontDestroySingletonBehaviour<StageDataManager> 
         Debug.LogWarning(StageName + "라는 스테이지는 없습니다.");
         return null;
     }
-    private void Start() {
-        bool checkStage = false;
-        for (int i = 0; i < StageDataList.Count; i++) {
-            if (SceneManager.GetActiveScene().name == StageDataList[i].SceneName) {
-                SceneUtilityManager.Instance.FadeIn(StageDataList[i].FadeInEffectName, StageDataList[i].FadeInDuration);
-                checkStage = true;
-                break;
-            }
-        }
-        if (checkStage == false)
-            SceneUtilityManager.Instance.FadeIn("NormalFadeEffect", 2);
-        EventManager<GameEvent>.Instance.AddListener(GameEvent.ChangeStage, this, StageChangeEvent);
-    }
 
     void StageChangeEvent(GameEvent eventType, Component component, object param) {
-        string SceneName = (string)param;
-        for(int i = 0; i < StageDataList.Count; i++) {
-            if(SceneName == StageDataList[i].SceneName) {
-                if(SceneUtilityManager.Instance != null)
-                SceneUtilityManager.Instance.FadeIn(StageDataList[i].FadeInEffectName, StageDataList[i].FadeInDuration);
+        SetStage((string)param);
+    }
+    void SetStage(string stageName) {
+        string SceneName = stageName;
+        for (int i = 0; i < StageDataList.Count; i++) {
+            if (SceneName == StageDataList[i].SceneName) {
+                if (SceneUtilityManager.Instance != null)
+                    SceneUtilityManager.Instance.FadeIn(StageDataList[i].FadeInEffectName, StageDataList[i].FadeInDuration);
                 StageDataList[i].IsJoin = true;
 
                 if (StageDataList[i].BGM != null)
-                    SoundManager.Instance.PlayBGM(StageDataList[i].BGM, 1);
+                    SoundManager.Instance.PlayBGM(StageDataList[i].BGM, 1, StageDataList[i].IsLoop);
                 return;
             }
         }

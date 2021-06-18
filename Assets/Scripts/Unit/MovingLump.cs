@@ -35,7 +35,7 @@ public class MovingLump : EnemyBase {
             moveStartRed = true;
         }
         Vector2 trasPos = transform.position;
-        transform.DOMove(point, MoveDuration).SetEase(EaseType).OnComplete(() => { MovePoint(moveStartRed); Debug.Log("이동"); });
+        transform.DOMove(point, MoveDuration).SetEase(EaseType).OnComplete(() => { MovePoint(moveStartRed);});
     }
 
     void MovePoint(bool moveStartRed) {

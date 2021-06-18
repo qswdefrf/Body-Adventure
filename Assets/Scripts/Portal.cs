@@ -11,11 +11,16 @@ public class Portal : MonoBehaviour
     [SerializeField] string FadeEffectName = "NormalFadeEffect";
     [SerializeField] float FadeEffectDuration = 2;
     [SerializeField] Vector2 ColliderSize = new Vector2(1, 1);
+    bool GoStage = false;
     private void Update() {
         Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, ColliderSize, 0);
         foreach(Collider2D collider in colliders) {
-            if(collider.tag == "Player")
-                SceneUtilityManager.Instance.FadeAndSceneChange(SceneName, FadeEffectName, FadeEffectDuration);
+            if (GoStage == false) {
+                if (collider.tag == "Player") {
+                    SceneUtilityManager.Instance.FadeAndSceneChange(SceneName, FadeEffectName, FadeEffectDuration);
+                    GoStage = true;
+                }
+            }
         }
     }
     public void OnDrawGizmos() {

@@ -28,7 +28,7 @@ public class Lump : EnemyBase {
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("Wall") 
             || collision.gameObject.layer == LayerMask.NameToLayer("ObstacleWall")) {
-            Destroy(gameObject, 3);
+            Destroy(gameObject);
         }
     }
     ~Lump() {

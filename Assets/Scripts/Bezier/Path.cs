@@ -62,11 +62,9 @@ public class Path {
         return evenlySpacedPoints.ToArray();
     }
     public Vector2[] GetSegment(int i) {
-        return new Vector2[] { Points[i * 3], Points[i * 3 + 1], Points[i * 3 + 2], Points[i * 3 + 3] }; 
+        return new Vector2[] { Points[i * 3], Points[i * 3 + 1], 
+            Points[i * 3 + 2], Points[i * 3 + 3] }; 
     }
-    //public float GetNextPathDst(int i) {
-
-    //}
     public void MovePos(int i, Vector2 pos) {
         Vector2 deltaPos = pos - Points[i];
         Points[i] = pos;

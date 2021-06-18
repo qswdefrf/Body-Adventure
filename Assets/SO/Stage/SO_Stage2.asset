@@ -13,10 +13,8 @@ MonoBehaviour:
   m_Name: SO_Stage2
   m_EditorClassIdentifier: 
   sceneName: Stage2
-  bgm: {fileID: 0}
+  bgm: {fileID: 8300000, guid: 72893cd417653e0419826135d721fe94, type: 3}
   fadeInEffectName: NormalFadeEffect
   fadeInDuration: 2
-  fadeOutEffectName: NormalFadeEffect
-  fadeOutDuration: 2
-  isNormalJoin: 1
-  IsJoin: 1
+  isNormalJoin: 0
+  IsJoin: 0

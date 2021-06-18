@@ -743,7 +743,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ae7ec1a1d666dd4895fa45fa3e9cb4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FirstPageOpen: 1
+  FirstPageOpen: 0
   PageList:
   - PageObject: {fileID: 8844923698181017090}
     PageName: Menu

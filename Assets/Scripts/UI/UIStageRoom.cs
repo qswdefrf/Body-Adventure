@@ -18,8 +18,8 @@ public class UIStageRoom : MonoBehaviour
             if (stageData != null) {
                 if (!stageData.IsJoin) {
                     ColorBlock cb = stageButton.button.colors;
-                    cb.normalColor = Color.black;
-                    cb.selectedColor = Color.black;
+                    cb.normalColor = Color.gray;
+                    cb.selectedColor = Color.gray;
                     stageButton.button.colors = cb;
                 } else
                     stageButton.button.onClick.AddListener(() => { OnStageButtonClick(stageData.SceneName); });
@@ -33,5 +33,9 @@ public class UIStageRoom : MonoBehaviour
     }
     void OnStageButtonClick(string stageName) {
         SceneUtilityManager.Instance.FadeAndSceneChange(stageName, "NormalFadeEffect", 2);
+    }
+    public void ExitGame() {
+        Debug.Log("게임 종료");
+        Application.Quit();
     }
 }

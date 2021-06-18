@@ -57,4 +57,7 @@ public class UIView : MonoBehaviour
         if(ActivePage.PageObject != null)
         ActivePage.PageObject.gameObject.SetActive(false);
     }
+    public void PlayEffect(string effectName) {
+        SoundManager.Instance.PlayEffect(effectName);
+    }
 }
